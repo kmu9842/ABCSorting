@@ -30,13 +30,23 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
         glview = GLViewImpl::create("My Game");
+
+		//화면 크기 설정
+		glview->setFrameSize(480,320);
+
         director->setOpenGLView(glview);
     }
+
+	// 해상도 설정
+	CCSize curSize = CCSize(TARGET_WIDTH, TARGET_HEIGHT);
+	director->getOpenGLView()->setDesignResolutionSize(curSize.width, curSize.height, kResolutionExactFit);
+	director->setContentScaleFactor(1.0);
 
     // turn on display FPS
     director->setDisplayStats(true);
