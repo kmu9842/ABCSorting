@@ -3,9 +3,21 @@
 
 #include "cocos2d.h"
 
+USING_NS_CC;
+
 class HelloWorld : public cocos2d::LayerColor
 {
-public:
+private :
+	int stageNum = 1;
+	int stringIndex = 26;
+	int alphabatArray[100];
+
+	Label *alphabat[100];
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+public :
+
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
     static cocos2d::Scene* createScene();
 
@@ -13,7 +25,10 @@ public:
     virtual bool init();
     
     // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+	void menuCloseCallback(cocos2d::Ref* pSender);
+
+	void settingString();
+	void HelloWorld::update(float delta);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
