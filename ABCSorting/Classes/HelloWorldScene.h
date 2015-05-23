@@ -9,12 +9,17 @@ class HelloWorld : public cocos2d::LayerColor
 {
 private :
 	int stageNum = 1;
+	int selectTag[2];
+	int selectCount = 0;
 	int stringIndex = 26;
+	int selectX = 0;
 	int alphabatArray[100];
 
 	Label *alphabat[100];
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	Sprite *castSprite2 = Sprite::create("selectside.png");
 
 public :
 
@@ -28,7 +33,8 @@ public :
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
 	void settingString();
-	void HelloWorld::update(float delta);
+	void settingRandom();
+	void update(float delta);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

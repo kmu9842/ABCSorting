@@ -27,6 +27,9 @@ bool HelloWorld::init()
 
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
+
+	selectTag[0] = 0;
+	selectTag[1] = 0;
     
 	/*
     auto closeItem = MenuItemImage::create(
@@ -40,18 +43,19 @@ bool HelloWorld::init()
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);*/
-
+	
+	settingRandom();
 	settingString();
-
-	for (int i = 0; i < stringIndex; i++){
-		this->addChild(alphabat[i], 1);
-	}
 
 	auto castSprite = Sprite::create("side.png");
 	castSprite->setPosition(Vec2(visibleSize.width / 2,
 								 visibleSize.height / 2));
 	this->addChild(castSprite);
 
+	castSprite2->setPosition(Vec2(visibleSize.width / 2,
+		visibleSize.height / 2));
+	this->addChild(castSprite2);
+	castSprite2->setVisible(false);
 
 	auto RightButton = MenuItemImage::create(
 		"button1.png",
@@ -73,7 +77,17 @@ bool HelloWorld::init()
 		origin.x + 16 + LeftButton->getContentSize().width / 2,
 		origin.y + 16 + LeftButton->getContentSize().height / 2));
 
-	auto menu = Menu::create(RightButton, LeftButton, NULL);
+	auto SelectButton = MenuItemImage::create(
+		"SelectButton.png",
+		"SelectButtons.png",
+		CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+	SelectButton->setTag(3);
+
+	SelectButton->setPosition(Vec2(
+		visibleSize.width / 2,
+		16 + LeftButton->getContentSize().height / 2));
+
+	auto menu = Menu::create(RightButton, LeftButton, SelectButton, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
     
@@ -82,8 +96,7 @@ bool HelloWorld::init()
     return true;
 }
 
-
-void HelloWorld::settingString(){
+void HelloWorld::settingRandom(){
 	int index = 0, rindex, tmp;
 
 	srand((unsigned)time(NULL));
@@ -99,6 +112,9 @@ void HelloWorld::settingString(){
 
 		index++;
 	}
+}
+
+void HelloWorld::settingString(){
 
 	for (int i = 0; i<stringIndex; i++) {
 		switch (alphabatArray[i])
@@ -136,8 +152,12 @@ void HelloWorld::settingString(){
 
 		alphabat[i]->setTextColor(Color4B(0, 0, 0, 255));
 
-		alphabat[i]->setPosition(Vec2(visibleSize.width / 2 + i*48,
+		alphabat[i]->setPosition(Vec2(visibleSize.width / 2 + i * 48 - selectX*48,
 			visibleSize.height / 2));
+	}
+
+	for (int i = 0; i < stringIndex; i++){
+		this->addChild(alphabat[i], 1);
 	}
 }
 
@@ -155,19 +175,54 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 	switch (tag)
 	{
 	case 1:
-		for (int i = 0; i < stringIndex; i++) {
-			alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
-				visibleSize.height / 2));
+		if (selectX < stringIndex - 1){
+			for (int i = 0; i < stringIndex; i++) {
+				alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
+					visibleSize.height / 2));
+				if (selectCount > 0 && i == selectTag[0]+1){
+					castSprite2->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
+						visibleSize.height / 2));
+				}
+			}
+
+			selectX++;
 		}
-		
 		break;
 
 	case 2:
-		for (int i = 0; i < stringIndex; i++) {
-			alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() + 48,
-				visibleSize.height / 2));
+		if (selectX > 0){
+			for (int i = 0; i < stringIndex; i++) {
+				alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() + 48,
+					visibleSize.height / 2));
+				if (selectCount > 0 && i == selectTag[0] + 1){
+					castSprite2->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
+						visibleSize.height / 2));
+				}
+			}
+			selectX--;
 		}
 		break;
+
+	case 3:
+		selectTag[selectCount] = selectX;
+		selectCount++;
+		castSprite2->setVisible(true);
+		castSprite2->setPosition(Vec2(alphabat[selectTag[0] + 1]->getPositionX() - 48,
+			visibleSize.height / 2));
+
+		if (selectCount == 2){
+			int tmp = alphabatArray[selectTag[0]];
+			alphabatArray[selectTag[0]] = alphabatArray[selectTag[1]];
+			alphabatArray[selectTag[1]] = tmp;
+
+			for (int i = 0; i < stringIndex; i++){
+				this->removeChild(alphabat[i], 1);
+			}
+
+			settingString();
+			selectCount = 0;
+			castSprite2->setVisible(false);
+		}
 
 	default:
 		break;
