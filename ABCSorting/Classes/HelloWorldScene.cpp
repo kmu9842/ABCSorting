@@ -90,8 +90,13 @@ bool HelloWorld::init()
 	auto menu = Menu::create(RightButton, LeftButton, SelectButton, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 1);
+
+	TimeCount = Label::createWithTTF("0.0", "fonts/Marker Felt.ttf", 36);
+	TimeCount->setTextColor(Color4B(0, 0, 0, 255));
+	TimeCount->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 24));
+	this->addChild(TimeCount, 1);
     
-	this->schedule(schedule_selector(HelloWorld::update));
+	this->schedule(schedule_selector(HelloWorld::update), 0.1);
 
     return true;
 }
@@ -164,8 +169,33 @@ void HelloWorld::settingString(){
 
 void HelloWorld::update(float delta){
 
+	countT += delta;
+	
+	countT = ((int)(countT * pow(10.0, 1))) / pow(10.0, 1);
+
+	ss << countT;
+	
+	buffer = ss.str();
+	TimeCount->setString(buffer);
+	ss.str("");
 }
 
+void HelloWorld::endGame(){
+	int count = 0;
+
+	for (int i = 0; i <stringIndex;i++){
+		if (alphabatArray[i] > alphabatArray[i-1] && i > 0){
+			count++;
+		}
+	}
+
+	if (count >= stringIndex-1){
+		CCDirector::sharedDirector()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+		exit(0);
+#endif
+	}
+}
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
@@ -179,12 +209,9 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 			for (int i = 0; i < stringIndex; i++) {
 				alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
 					visibleSize.height / 2));
-				if (selectCount > 0 && i == selectTag[0]+1){
-					castSprite2->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
-						visibleSize.height / 2));
-				}
 			}
-
+			castSprite2->setPosition(Vec2(castSprite2->getPositionX() - 48,
+				visibleSize.height / 2));
 			selectX++;
 		}
 		break;
@@ -194,11 +221,9 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 			for (int i = 0; i < stringIndex; i++) {
 				alphabat[i]->setPosition(Vec2(alphabat[i]->getPositionX() + 48,
 					visibleSize.height / 2));
-				if (selectCount > 0 && i == selectTag[0] + 1){
-					castSprite2->setPosition(Vec2(alphabat[i]->getPositionX() - 48,
-						visibleSize.height / 2));
-				}
 			}
+			castSprite2->setPosition(Vec2(castSprite2->getPositionX() + 48,
+				visibleSize.height / 2));
 			selectX--;
 		}
 		break;
@@ -207,7 +232,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 		selectTag[selectCount] = selectX;
 		selectCount++;
 		castSprite2->setVisible(true);
-		castSprite2->setPosition(Vec2(alphabat[selectTag[0] + 1]->getPositionX() - 48,
+		castSprite2->setPosition(Vec2(visibleSize.width / 2,//alphabat[selectTag[0] + 1]->getPositionX() - 48,
 			visibleSize.height / 2));
 
 		if (selectCount == 2){
@@ -222,7 +247,9 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 			settingString();
 			selectCount = 0;
 			castSprite2->setVisible(false);
+			endGame();
 		}
+
 
 	default:
 		break;

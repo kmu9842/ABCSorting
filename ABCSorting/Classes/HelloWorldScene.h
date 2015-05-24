@@ -11,11 +11,17 @@ private :
 	int stageNum = 1;
 	int selectTag[2];
 	int selectCount = 0;
-	int stringIndex = 26;
+	int stringIndex = 8;
 	int selectX = 0;
 	int alphabatArray[100];
 
+	float countT = 0;
+	std::string buffer;
+	std::ostringstream ss;
+
 	Label *alphabat[100];
+	Label *TimeCount;
+
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -33,6 +39,7 @@ public :
 	void menuCloseCallback(cocos2d::Ref* pSender);
 
 	void settingString();
+	void endGame();
 	void settingRandom();
 	void update(float delta);
     
