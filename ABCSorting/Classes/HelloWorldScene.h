@@ -15,6 +15,8 @@ private :
 	int selectX = 0;
 	int alphabatArray[100];
 
+	bool gameOut = false;
+
 	float countT = 0;
 	std::string buffer;
 	std::ostringstream ss;

@@ -168,16 +168,17 @@ void HelloWorld::settingString(){
 
 
 void HelloWorld::update(float delta){
+	if (!gameOut){
+		countT += delta;
 
-	countT += delta;
-	
-	countT = ((int)(countT * pow(10.0, 1))) / pow(10.0, 1);
+		countT = ((int)(countT * pow(10.0, 1))) / pow(10.0, 1);
 
-	ss << countT;
-	
-	buffer = ss.str();
-	TimeCount->setString(buffer);
-	ss.str("");
+		ss << countT;
+
+		buffer = ss.str();
+		TimeCount->setString(buffer);
+		ss.str("");
+	}
 }
 
 void HelloWorld::endGame(){
@@ -189,11 +190,13 @@ void HelloWorld::endGame(){
 		}
 	}
 
-	if (count >= stringIndex-1){
+	if (count >= stringIndex - 1){
+		gameOut = true;
+		/*
 		CCDirector::sharedDirector()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 		exit(0);
-#endif
+#endif*/
 	}
 }
 
