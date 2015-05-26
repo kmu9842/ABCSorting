@@ -2,16 +2,17 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "GameData.h"
 
 USING_NS_CC;
 
 class HelloWorld : public cocos2d::LayerColor
 {
 private :
-	int stageNum = 1;
+	int stage = 1;
 	int selectTag[2];
 	int selectCount = 0;
-	int stringIndex = 8;
+	int stringIndex = 8 + (stage - 1) * 2;
 	int selectX = 0;
 	int alphabatArray[100];
 
@@ -32,7 +33,7 @@ private :
 public :
 
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();

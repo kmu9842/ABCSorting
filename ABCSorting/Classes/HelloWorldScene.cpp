@@ -179,6 +179,14 @@ void HelloWorld::update(float delta){
 		TimeCount->setString(buffer);
 		ss.str("");
 	}
+	else {
+		countT += delta;
+		if (countT >= 2){
+			auto newScene = HelloWorld::createScene();
+			Director::getInstance()->replaceScene(newScene);
+		}
+		
+	}
 }
 
 void HelloWorld::endGame(){
@@ -192,6 +200,7 @@ void HelloWorld::endGame(){
 
 	if (count >= stringIndex - 1){
 		gameOut = true;
+		countT = 0;
 		/*
 		CCDirector::sharedDirector()->end();
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
