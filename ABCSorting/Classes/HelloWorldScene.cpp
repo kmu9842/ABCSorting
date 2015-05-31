@@ -7,9 +7,11 @@ Scene* HelloWorld::createScene()
     
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
+	LableLayer = HelloWorld::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
+	scene->addChild(LableLayer);
 
     // return the scene
     return scene;

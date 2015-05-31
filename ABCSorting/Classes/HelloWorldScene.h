@@ -18,6 +18,8 @@ private :
 
 	bool gameOut = false;
 
+	Layer *LableLayer;
+
 	float countT = 0;
 	std::string buffer;
 	std::ostringstream ss;
